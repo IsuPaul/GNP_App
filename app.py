@@ -8,17 +8,22 @@ import os
 st.title("3D Printing Cement Mortar Integrity Predictor")
 st.write("Input the parameters below to predict Surface Resistivity (SR).")
 
-# By setting step=0.0, Streamlit allows any number of decimal places
-days = st.number_input("Days", step=0.0)
-graphene = st.number_input("Graphene Content", step=0.0)
-wc = st.number_input("W/C Ratio", step=0.0)
-sand_c = st.number_input("Sand/C", step=0.0)
-sp_c = st.number_input("SP/C", step=0.0)
-vma_c = st.number_input("VMA/C", step=0.0)
-upv = st.number_input("UPV", step=0.0)
+# value=None ensures the field starts empty
+# step=None allows the browser to handle arbitrary precision without forced rounding
+days = st.number_input("Days", value=None, step=None)
+graphene = st.number_input("Graphene Content", value=None, step=None)
+wc = st.number_input("W/C Ratio", value=None, step=None)
+sand_c = st.number_input("Sand/C", value=None, step=None)
+sp_c = st.number_input("SP/C", value=None, step=None)
+vma_c = st.number_input("VMA/C", value=None, step=None)
+upv = st.number_input("UPV", value=None, step=None)
 
 if st.button("Predict Strength"):
-    if os.path.exists('model.pkl'):
+    # Check if all inputs are filled
+    inputs = [days, graphene, wc, sand_c, sp_c, vma_c, upv]
+    if any(val is None for val in inputs):
+        st.warning("Please enter values for all fields before predicting.")
+    elif os.path.exists('model.pkl'):
         # Load the pre-trained model
         model = joblib.load('model.pkl')
 
@@ -29,7 +34,7 @@ if st.button("Predict Strength"):
         # Perform prediction
         prediction = model.predict(input_data)
 
-        # Output the raw prediction value without rounding constraints
+        # Display result with high precision
         st.success(f"Predicted Surface Resistivity (SR): {prediction[0]} kΩ-cm")
     else:
-        st.error("Model file 'model.pkl' not found. Please ensure it is in the same directory as app.py.")
+        st.error("Model file 'model.pkl' not found.")
