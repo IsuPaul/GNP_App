@@ -40,7 +40,7 @@ def retrain_model():
 
 st.set_page_config(page_title="Concrete Integrity AI", layout="wide")
 st.title("🏗️ Self-Learning 3D Concrete Predictor")
-st.write("Enter parameters to predict Compressive Strength (SR). The model learns from every input.")
+st.write("Enter parameters to predict Surface Resistivity (SR). The model learns from every input.")
 
 col1, col2 = st.columns(2)
 
@@ -63,7 +63,7 @@ if st.button("Run Prediction & Retrain"):
         model = joblib.load(MODEL_FILE)
         pred = model.predict(input_df)[0]
         
-        st.success(f"### Predicted SR: {pred:.2f} MPa")
+        st.success(f"### Predicted SR: {pred:.2f} kΩ-cm")
         
         save_new_data(input_df, pred)
         log_usage()
